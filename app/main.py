@@ -13,23 +13,17 @@ load_dotenv()
 import boto3
 import botocore.session
 
-if 'AWS_PROFILE' not in os.environ:
-    session = botocore.session.Session()
-    session.set_credentials(
-    access_key='ACCESS_KEY123',
-    secret_key='SECRET_KEY123'
-    )
-if 'AWS_DEFAULT_REGION'  not in os.environ:
-    os.environ['AWS_DEFAULT_REGION'] = 'us-east-1'
-
 app = FastAPI()
-ENV_NAME = os.getenv("ENV_NAME", "development")
-print('This app is running in %s ENV', ENV_NAME)
+
+ENV_NAME                = os.getenv("ENV_NAME", "development")
+ORI_IMAGES_BUCKET       = os.getenv("ORI_IMAGES_BUCKET", 'oribucket'+''.join(random.choice(string.ascii_lowercase) for i in range(5)))
+RESIZED_IMAGES_BUCKET   = os.getenv("RESIZED_IMAGES_BUCKET", 'resizedbucket'+''.join(random.choice(string.ascii_lowercase) for i in range(5)))
+DYANMODB_TABLE_NAME     = os.getenv("DYANMODB_TABLE_NAME", "image_meta")
+
+print('This app is running in %s ENV'.format(ENV_NAME))
 env = Environment(loader=FileSystemLoader('templates'))
 
-ori_bucket_name =   'oribucket'+''.join(random.choice(string.ascii_lowercase) for i in range(5))
-resize_bucket_name =   'resizedbucket'+''.join(random.choice(string.ascii_lowercase) for i in range(5))
-table_name  =   'image_meta'
+
 print(ori_bucket_name)
 print(resize_bucket_name)
 
@@ -46,16 +40,17 @@ def init_bucket(s3_client):
 
 if ENV_NAME == "development":
     dynamodb = boto3.resource('dynamodb', endpoint_url='http://localhost:8000')
-    table = dynamodb.Table(table_name)
+    table = dynamodb.Table(DYANMODB_TABLE_NAME)
     s3 = boto3.resource('s3', endpoint_url='http://localhost:9090')
     s3_client = boto3.client('s3', endpoint_url='http://localhost:9090')
-    init_bucket(s3_client)
 
+    #init_bucket(s3_client, ori_bucket_name, resize_bucket_name)
 elif ENV_NAME == "production":
-    dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table(table_name)
-    s3 = boto3.resource('s3')
-    s3_client = boto3.client('s3')
+    region=boto3.session.Session().region_name
+    dynamodb = boto3.resource('dynamodb', region_name=region)
+    table = dynamodb.Table(DYANMODB_TABLE_NAME)
+    s3 = boto3.resource('s3', region_name=region)
+    s3_client = boto3.client('s3', region_name=region)
 
 def returnDBRecords():
     response = table.scan()
