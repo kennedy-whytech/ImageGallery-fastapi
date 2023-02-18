@@ -1,4 +1,4 @@
-# gallery-fast-api
+# ImageGallery-fastapi
 ## A simple image galary web via Fast-api with local S3 & Dynamodb. 
 ### Next, will provision necessary resoruces via AWS Cloudformation and deploy the docker in an EC2 instance connected with Dyanmo & S3
 
