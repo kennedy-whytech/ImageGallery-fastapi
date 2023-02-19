@@ -39,7 +39,9 @@
         <tbody>
           {% for item in items %}
           <tr>
-            <td><img src="{{ item.object_url }}" class="img-thumbnail"></td>
+            <td>
+              <img src="data:image/jpeg;base64,{{ item.img_b64 }}">
+             </td>
             <td>{{ item.title }}</td>
             <td>{{ item.description }}</td>
             <td>{{ item.tags }}</td>
