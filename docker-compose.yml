@@ -1,0 +1,65 @@
+version: "3.9"
+
+networks:
+  app-network:
+
+services:
+  dynamodb:
+    image: amazon/dynamodb-local
+    container_name: local-dynamodb
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail http://localhost:8000/ || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+
+  s3mock:
+    image: adobe/s3mock
+    container_name: local-s3
+    environment:
+      - initialBuckets=test
+      # - debug=true
+    ports:
+      - "9090:9090"
+      - "9191:9191"
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail http://localhost:9090/ || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+
+
+  # Feel free to replace it with your own app
+  gallery_fast_api: 
+    image: kennedydocker/gallery_fast_api:latest
+    environment:
+      - ENV_NAME=development
+      - ORI_IMAGES_BUCKET=oriimagesbucket7566
+      - RESIZED_IMAGES_BUCKET=resizedimagesbucket7566
+      - DYANMODB_TABLE_NAME=image_meta
+    depends_on:
+      - dynamodb
+      - s3mock
+    ports:
+      - "8006:8006"
+    volumes:
+      - type: bind
+        source: $HOME/.aws
+        target: /root/.aws
+        read_only: true
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail http://localhost:8006/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    command:  >
+      wait-for-it -t 0 -p -s dynamodb:8000 -s s3mock:9090  --  uvicorn main:app --host 0.0.0.0 --port 8006
+      

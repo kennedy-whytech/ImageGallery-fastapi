@@ -9,11 +9,10 @@ import random
 import string
 from dotenv import load_dotenv
 import os
-load_dotenv()
 import boto3
 import botocore.session
 import base64
-
+load_dotenv()
 
 app = FastAPI()
 
@@ -22,7 +21,7 @@ ORI_IMAGES_BUCKET       = os.getenv("ORI_IMAGES_BUCKET", 'oriimagesbucket7566')
 RESIZED_IMAGES_BUCKET   = os.getenv("RESIZED_IMAGES_BUCKET", 'resizedimagesbucket7566')
 DYANMODB_TABLE_NAME     = os.getenv("DYANMODB_TABLE_NAME", "image_meta")
 
-print('This app is running in %s ENV'.format(ENV_NAME))
+print('This app is running in {} ENV'.format(ENV_NAME))
 env = Environment(loader=FileSystemLoader('templates'))
 print(ORI_IMAGES_BUCKET)
 print(RESIZED_IMAGES_BUCKET)
@@ -30,19 +29,47 @@ print(RESIZED_IMAGES_BUCKET)
 
 if ENV_NAME == "development":
     region="us-east-1"
-    dynamodb = boto3.resource('dynamodb', endpoint_url='http://localhost:8000', region_name=region)
-    table = dynamodb.Table(DYANMODB_TABLE_NAME)
-    s3 = boto3.resource('s3', endpoint_url='http://localhost:9090', region_name=region)
-    s3_client = boto3.client('s3', endpoint_url='http://localhost:9090', region_name=region)
+    dynamodb = boto3.resource('dynamodb', endpoint_url='http://dynamodb:8000', region_name=region) 
+    s3 = boto3.resource('s3', endpoint_url='http://s3mock:9090', region_name=region)
+    s3_client = boto3.client('s3', endpoint_url='http://s3mock:9090', region_name=region)
 
 elif ENV_NAME == "production":
     region="us-east-1"
     dynamodb = boto3.resource('dynamodb', region_name=region)
-    table = dynamodb.Table(DYANMODB_TABLE_NAME)
     s3 = boto3.resource('s3', region_name=region)
     s3_client = boto3.client('s3', region_name=region)
 
+# Dynamodb tables setup
+try:
+    # Try to get the table
+    table = dynamodb.Table(DYANMODB_TABLE_NAME)
+    table.load()
+except dynamodb.meta.client.exceptions.ResourceNotFoundException:
+    # Table does not exist, so create it
+    table = dynamodb.create_table(
+        TableName=DYANMODB_TABLE_NAME,
+        KeySchema=[
+            {
+                'AttributeName': 'id',
+                'KeyType': 'HASH'
+            }
+        ],
+        AttributeDefinitions=[
+            {
+                'AttributeName': 'id',
+                'AttributeType': 'S'
+            }
+        ],
+        ProvisionedThroughput={
+            'ReadCapacityUnits': 5,
+            'WriteCapacityUnits': 5
+        }
+    )
+    table.wait_until_exists()
 
+table = dynamodb.Table(DYANMODB_TABLE_NAME)
+
+# S3 bucket setup
 bucket_list = [bucket['Name'] for bucket in s3_client.list_buckets()['Buckets']]
 
 if ORI_IMAGES_BUCKET not in bucket_list:
@@ -120,3 +147,4 @@ async def upload_image(file: UploadFile = File(...), title: str = Form(...), des
 
     table.put_item(Item=item)
     return returnDBRecords()
+
