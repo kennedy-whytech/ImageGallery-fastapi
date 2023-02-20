@@ -12,12 +12,14 @@ This is where the ImageGallery-fastapi app comes in handy. The app is a simple i
 ## TL;DW
 1. Make sure you have setup $HOME/.aws/credentials. It can be just a dumpy credential locally
 
-2. Run the app locally with docker-compose. Remember to shutdown servcies before each rerun e.g docker-compose down
+2. Run the app locally with docker-compose. Remember to shutdown servcies before each rerun e.g 
 ```
+docker-compose down
 docker-compose up
 ```
+Now, you can visit the web app on localhost:8006 from your browser! 
 
-3. After each modificaiton on the app. Build the image again and rerun the docker-compose e.g
+3. After each modificaiton on the app. Build the image again and repeat the step 2 e.g
 ```
 docker build --no-cache -t kennedydocker/gallery_fast_api:latest .
 ```
