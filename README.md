@@ -3,7 +3,9 @@
 ## Summary
 A simple image galary web via Fast-api with local S3 & Dynamodb. 
 
-The objective of the project is to test a web app locally before provisioning it to AWS. Next, all necessary resoruces will be created via AWS Cloudformation. Docker container will be run in an EC2 instance connected to Dyanmo & S3
+The objective of the project is to test a web app locally in a simulated environment like on AWS. Next, all necessary resoruces will be created via AWS Cloudformation. Docker container will be run in an EC2 instance connected to Dyanmo & S3. 
+
+Development teams are often seperated from deployment teams. The local test could be useful for quick tests. Hopefully, it make developers' life easier. =]
 
 ## TLDW
 1. Make sure you have setup $HOME/.aws/credentials. It can be just a dumpy credential locally
@@ -66,11 +68,14 @@ docker push kennedydocker/gallery_fast_api:latest
 
 ### AWS setup
 Prerequisite
-1. create s3 buckets 
-2. create dynamodb table 
+1. create s3 buckets with essential policy
+2. create dynamodb table with essential policy
 3. create cloudformation stack
 
 The setup script is actually recorded in UserData in cloudformation stack. FYI, on EC2, you can run the following:
 ```
 docker run -e ENV_NAME=production -e ORI_IMAGES_BUCKET=oriimagesbucket7566 -e RESIZED_IMAGES_BUCKET=resizedimagesbucket7566 -e DYANMODB_TABLE_NAME=image_meta -p 8006:8006 kennedydocker/gallery_fast_api:latest
 ```
+
+### UI Reference
+![plot](./image/ui_ref.png)
