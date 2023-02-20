@@ -3,7 +3,7 @@
 ## Summary
 A simple image galary web via Fast-api with local S3 & Dynamodb. 
 
-The objective of the project is to test the app locally before provisioning it to AWS. Next, all necessary resoruces will be created via AWS Cloudformation. Docker container will be run in an EC2 instance connected with Dyanmo & S3
+The objective of the project is to test a web app locally before provisioning it to AWS. Next, all necessary resoruces will be created via AWS Cloudformation. Docker container will be run in an EC2 instance connected to Dyanmo & S3
 
 ## TLDW
 1. Make sure you have setup $HOME/.aws/credentials. It can be just a dumpy credential locally
@@ -13,7 +13,7 @@ The objective of the project is to test the app locally before provisioning it t
 docker-compose up
 ```
 
-3. After each modificaiton on the app. Build the image again and rerun the docker-compose
+3. After each modificaiton on the app. Build the image again and rerun the docker-compose e.g
 ```
 docker build --no-cache -t kennedydocker/gallery_fast_api:latest .
 ```
@@ -28,6 +28,7 @@ npm install -g dynamodb-admin
 dynamodb-admin
 ```
 Then visit http://localhost:8001/
+
 REF:
 
 https://hub.docker.com/r/amazon/dynamodb-local
@@ -55,9 +56,9 @@ docker run --network host  -e ENV_NAME=development -e ORI_IMAGES_BUCKET=oriimage
 With the above instructions, you should be able to run the app locally. Enjoy testing with the app locally!! =]
 
 ##  AWS production deployment
-### The cloudformation stack will be in another repo
+### The cloudformation stack will be in another repo.
 
-### publish it to dockerhub
+### publish it to dockerhub e.g
 ```
 docker build --no-cache -t kennedydocker/gallery_fast_api:latest .
 docker push kennedydocker/gallery_fast_api:latest
