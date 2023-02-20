@@ -44,12 +44,13 @@ REF:
 
 https://github.com/adobe/S3Mock
 
-### Setup the fast-api app without docker. This can useful, since --network host may not work in your machine during testing
+### Setup the fast-api app without docker. 
+This can useful, since --network host may not work in your machine during testing
 ```
 uvicorn main:app --port 8006 --reload 
 ```
 
-### Alernatively, run it with docker on non-mac machine.  --network host can be used. As mentioned, configure your $HOME/.aws/credentials, so that can be binded to the container
+Alernatively, run it with docker on non-mac machine.  --network host can be used. As mentioned, configure your $HOME/.aws/credentials, so that it can be binded to the container
 ```
 docker build -t kennedydocker/gallery_fast_api:latest .
 docker run --network host  -e ENV_NAME=development -e ORI_IMAGES_BUCKET=oriimagesbucket7566 -e RESIZED_IMAGES_BUCKET=resizedimagesbucket7566 -e DYANMODB_TABLE_NAME=image_meta --mount type=bind,source=$HOME/.aws,target=/root/.aws,readonly kennedydocker/gallery_fast_api:latest
