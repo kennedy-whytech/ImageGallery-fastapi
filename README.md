@@ -1,11 +1,11 @@
 # ImageGallery-fastapi
 
 ## Summary
-A simple image galary web via Fast-api with local S3 & Dynamodb. 
+A simple image gallery web via Fast-api with local S3 & Dynamodb. 
 
-The objective of the project is to test a web app locally in a simulated environment like on AWS. Next, all necessary resoruces will be created via AWS Cloudformation. Docker container will be run in an EC2 instance connected to Dyanmo & S3. 
+The objective of the project is to test a web app locally in a simulated environment like on AWS. Next, all necessary resoruces will be created via AWS Cloudformation. The dockerized web app will be run in an EC2 instance connected to Dyanmo & S3. 
 
-Development teams are often seperated from deployment teams. The local test could be useful for quick tests. Hopefully, it make developers' life easier. =]
+Development teams are often seperated from deployment teams. A good local testing environment can be useful to shorten the deployment time. Hopefully, it makes developers' life easier. =]
 
 ## TLDW
 1. Make sure you have setup $HOME/.aws/credentials. It can be just a dumpy credential locally
@@ -55,7 +55,7 @@ docker build -t kennedydocker/gallery_fast_api:latest .
 docker run --network host  -e ENV_NAME=development -e ORI_IMAGES_BUCKET=oriimagesbucket7566 -e RESIZED_IMAGES_BUCKET=resizedimagesbucket7566 -e DYANMODB_TABLE_NAME=image_meta --mount type=bind,source=$HOME/.aws,target=/root/.aws,readonly kennedydocker/gallery_fast_api:latest
 ```
 
-With the above instructions, you should be able to run the app locally. Enjoy testing with the app locally!! =]
+With the above instructions, you should be able to run the app locally. Enjoy testing with the app locally!!
 
 ##  AWS production deployment
 ### The cloudformation stack will be in another repo.
@@ -68,8 +68,8 @@ docker push kennedydocker/gallery_fast_api:latest
 
 ### AWS setup
 Prerequisite
-1. create s3 buckets with essential policy
-2. create dynamodb table with essential policy
+1. create s3 buckets with appropriate policies and rules
+2. create dynamodb table with appropriate essential policies and rules
 3. create cloudformation stack
 
 The setup script is actually recorded in UserData in cloudformation stack. FYI, on EC2, you can run the following:
