@@ -9,6 +9,10 @@ As a developer, testing apps locally in a simulated environment like AWS can be 
 
 This is where the ImageGallery-fastapi app comes in handy. The app is a simple image gallery web application with local S3 and DynamoDB. You can follow the structure to develop your own apps easily! =]
 
+![plot](./image/ui_ref.png)
+
+![plot](./image/ArchitectureDiagram.png)
+
 ## TL;DW
 1. Make sure you have setup $HOME/.aws/credentials. It can be just a dumpy credential locally
 
@@ -84,5 +88,3 @@ The setup script is actually recorded in UserData in cloudformation stack. FYI, 
 docker run -e ENV_NAME=production -e ORI_IMAGES_BUCKET=oriimagesbucket7566 -e RESIZED_IMAGES_BUCKET=resizedimagesbucket7566 -e DYANMODB_TABLE_NAME=image_meta -p 8006:8006 kennedydocker/gallery_fast_api:latest
 ```
 
-### UI Reference
-![plot](./image/ui_ref.png)
