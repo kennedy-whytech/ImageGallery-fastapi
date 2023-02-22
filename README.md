@@ -28,7 +28,8 @@ Now, you can visit the web app on localhost:8006 from your browser!
 docker build --no-cache -t kennedydocker/gallery_fast_api:latest .
 ```
 
-To follow the same structure for your own apps, you can modify the gallery_fast_api service in the docker-compose.yml e.g replace the image repo with your own one.
+To follow the same structure for your own apps, you can modify the gallery_fast_api service in the [docker-compose.yml](https://github.com/kennedy-whytech/ImageGallery-fastapi/blob/a36e71c3f32a8f3a806ceac27e21bff2950e54ec/docker-compose.yml#L39) e.g replace the image repo with your own one.
+
 
 ## Setup local dyanmodb, s3 and fast-api app individually 
 ### Setup local dyanmodb. 
