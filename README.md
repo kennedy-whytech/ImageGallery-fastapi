@@ -9,7 +9,7 @@ As a developer, testing apps locally in a simulated environment like AWS can be 
 
 This is where the ImageGallery-fastapi app comes in handy. The app is a simple image gallery web application with local S3 and DynamoDB. You can follow the structure to develop your own apps easily! =]
 
-![plot](./image/ui_ref.png)
+![plot](./image/ui_ref_new.png)
 
 ![plot](./image/ArchitectureDiagram.png)
 

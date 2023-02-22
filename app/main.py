@@ -1,5 +1,7 @@
 from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+
 from jinja2 import Environment, FileSystemLoader
 from io import BytesIO
 from PIL import Image
@@ -15,6 +17,7 @@ import base64
 load_dotenv()
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 ENV_NAME                = os.getenv("ENV_NAME", "development")
 ORI_IMAGES_BUCKET       = os.getenv("ORI_IMAGES_BUCKET", 'oriimagesbucket7566')
