@@ -94,7 +94,12 @@ def returnDBRecords():
     for item in items:
         print(item['filename'])
         image_obj = s3_client.get_object(Bucket=RESIZED_IMAGES_BUCKET, Key=item['thumbnail_id'])['Body'].read()
+        ori_url =s3_client.generate_presigned_url('get_object',
+                                                    Params={'Bucket': ORI_IMAGES_BUCKET,
+                                                            'Key': item['original_id']})
         item['img_b64'] = base64.b64encode(image_obj).decode('utf-8')
+        item['ori_url'] = ori_url
+
     return HTMLResponse(template.render(items=items))
 
 @app.get('/')
@@ -121,16 +126,16 @@ async def upload_image(file: UploadFile = File(...), title: str = Form(...), des
 
     # Upload the original image to S3
     original_name = file.filename
-    original_id   = original_name+record_id
+    original_id   = record_id+original_name
     original_object = s3_client.put_object(
         Bucket=ORI_IMAGES_BUCKET,
-        Key=original_name,
+        Key=original_id,
         Body=file.file
     )
 
     # Create a thumbnail of the image and upload it to S3
     thumbnail_name = 'thumbnail_' + original_name
-    thumbnail_id   = thumbnail_name+record_id
+    thumbnail_id   = record_id+thumbnail_name
     thumbnail_data = create_thumbnail(file.file)
     thumbnail_object = s3_client.put_object(
         Bucket=RESIZED_IMAGES_BUCKET,
@@ -141,6 +146,7 @@ async def upload_image(file: UploadFile = File(...), title: str = Form(...), des
     item = {
         'id': record_id,
         'filename': original_name,
+        'original_id': original_id,
         'thumbnail': thumbnail_name,
         'thumbnail_id': thumbnail_id,
         'title': title,

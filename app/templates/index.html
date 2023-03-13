@@ -41,7 +41,7 @@
           {% for item in items %}
           <tr>
             <td>
-              <img src="data:image/jpeg;base64,{{ item.img_b64 }}">
+              <img src="data:image/jpeg;base64,{{ item.img_b64 }}" onclick="window.location.href='{{ item.ori_url }}';">
              </td>
             <td>{{ item.title }}</td>
             <td>{{ item.description }}</td>
