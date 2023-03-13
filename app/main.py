@@ -98,7 +98,7 @@ def returnDBRecords():
                                                     Params={'Bucket': ORI_IMAGES_BUCKET,
                                                             'Key': item['original_id']})
         item['img_b64'] = base64.b64encode(image_obj).decode('utf-8')
-        item['ori_url'] = ori_url
+        item['ori_url'] = ori_url.replace("s3mock", "localhost") # will be used only with the s3moock in local env.
 
     return HTMLResponse(template.render(items=items))
 
